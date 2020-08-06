@@ -1,0 +1,12 @@
+version:  '3'
+services:
+  cpp-notebook:
+      build: .
+      volumes:
+        - ./notebooks:/home/jovyan/work
+      ports:
+        - 8888:8888
+      container_name: cpp-notebook
+      command: "start-notebook.sh \
+           --NotebookApp.password='sha1:ea404afe50c2:c8ca102c9b5624c71896d35ddb36ed8928d053b2' \
+           --NotebookApp.allow_origin='*'"

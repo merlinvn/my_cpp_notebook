@@ -1,0 +1,43 @@
+server {
+    server_name nb.mutator.dev;
+
+    #location / {
+    #   proxy_pass http://127.0.0.1:8888;
+    #}
+    location / {
+        proxy_pass            http://localhost:8888;
+        proxy_set_header      Host $host;
+    }
+
+    location /api/kernels/ {
+        proxy_pass            http://localhost:8888;
+        proxy_set_header      Host $host;
+        # websocket support
+        proxy_http_version    1.1;
+        proxy_set_header      Upgrade "websocket";
+        proxy_set_header      Connection "Upgrade";
+        proxy_read_timeout    86400;
+    }
+
+
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/nb.mutator.dev/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/nb.mutator.dev/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = nb.mutator.dev) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name nb.mutator.dev;
+    return 404; # managed by Certbot
+
+
+}
